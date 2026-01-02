@@ -67,7 +67,7 @@ export function MyComponent() {
 ```tsx
 import { Link } from '@/src/navigation';
 
-<Link href="/candidats">Candidats</Link>
+<Link href="${local}/candidats">Candidats</Link>
 // Génère automatiquement: /fr/candidats ou /ar/candidats
 ```
 

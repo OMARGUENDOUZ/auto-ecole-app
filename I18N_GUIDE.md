@@ -34,7 +34,7 @@ Utilisez le composant `Link` depuis `@/src/navigation`:
 import { Link } from '@/src/navigation';
 
 export function Navigation() {
-  return <Link href="/candidats">Candidats</Link>;
+  return <Link href="${local}/candidats">Candidats</Link>;
 }
 ```
 
@@ -43,7 +43,7 @@ export function Navigation() {
 Utilisez le composant `LanguageSwitcher`:
 
 ```tsx
-import { LanguageSwitcher } from '@/components/LanguageSwitcher';
+import { LanguageSwitcher } from '@/src/components/LanguageSwitcher';
 
 export function Header() {
   return <LanguageSwitcher />;
