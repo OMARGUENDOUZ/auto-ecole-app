@@ -140,7 +140,7 @@ export function PaymentDialog({ studentId, open, onOpenChange, studentName }: Pa
                                             placeholder={t('amountPlaceholder')}
                                             className="pl-9"
                                             value={amount}
-                                            onChange={(e) => setAmount(e.target.value)}
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)}
                                         />
                                     </div>
                                 </div>

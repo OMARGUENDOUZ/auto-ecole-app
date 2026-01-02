@@ -14,6 +14,7 @@ import { Button } from '@/src/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
 import { Label } from '@/src/components/ui/label';
 import { ExamSlot, ExamCategory, ExamStatus } from '@/src/types/exam';
+import { Exam } from '@/src/types/ExamStudent';
 import { useCreateExamStudent } from '@/src/hooks/use-exam-slots';
 import { useExams } from '@/src/hooks/use-exams';
 import api from '@/src/lib/api';
@@ -53,7 +54,7 @@ export default function ScheduleExamDialog({
     const availableSlots = activeSlots?.filter(slot => {
         if (!studentExams) return true;
         // Check if student has an exam on the same date (ignore failed/cancelled if needed, but safer to block all same-day)
-        const hasConflict = studentExams.some(exam =>
+        const hasConflict = studentExams.some((exam: Exam) =>
             new Date(exam.date!).toDateString() === new Date(slot.examDate).toDateString()
         );
         return !hasConflict;
@@ -88,13 +89,13 @@ export default function ScheduleExamDialog({
                 <DialogHeader>
                     <DialogTitle>Programmer un examen</DialogTitle>
                     <DialogDescription>
-                        Sélectionnez une session d'examen active pour ce candidat.
+                        S&eacute;lectionnez une session d&apos;examen active pour ce candidat.
                     </DialogDescription>
                 </DialogHeader>
 
                 <div className="grid gap-4 py-4">
                     <div className="grid gap-2">
-                        <Label>Type d'examen (Suggéré)</Label>
+                        <Label>Type d&apos;examen (Sugg&eacute;r&eacute;)</Label>
                         <Select
                             value={selectedCategory}
                             onValueChange={(val) => setSelectedCategory(val as ExamCategory)}
@@ -114,7 +115,7 @@ export default function ScheduleExamDialog({
                     </div>
 
                     <div className="grid gap-2">
-                        <Label>Session d'examen</Label>
+                        <Label>Session d&apos;examen</Label>
                         <Select
                             value={selectedSlotId}
                             onValueChange={setSelectedSlotId}

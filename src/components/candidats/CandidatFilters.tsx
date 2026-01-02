@@ -56,7 +56,7 @@ export function CandidatFilters({ filters = {}, onFiltersChange }: CandidatFilte
         page: 0, // Reset à la première page lors d'un changement de filtre
       });
     }
-  }, [debouncedFirstName, debouncedLastName, debouncedPhoneNumber, filters, onFiltersChange]);
+  }, [debouncedFirstName, debouncedLastName, debouncedPhoneNumber, filters?.firstName, filters?.lastName, filters?.phoneNumber, onFiltersChange]);
 
   // Synchroniser les états locaux avec les filtres externes (si changés de l'extérieur, ex: reset)
   useEffect(() => {
@@ -69,7 +69,7 @@ export function CandidatFilters({ filters = {}, onFiltersChange }: CandidatFilte
     if (filters?.phoneNumber !== phoneNumber && filters?.phoneNumber !== debouncedPhoneNumber) {
       setPhoneNumber(filters?.phoneNumber || '');
     }
-  }, [filters?.firstName, filters?.lastName, filters?.phoneNumber]);
+  }, [filters?.firstName, filters?.lastName, filters?.phoneNumber, firstName, lastName, phoneNumber, debouncedFirstName, debouncedLastName, debouncedPhoneNumber]);
 
   // Mettre à jour les filtres quand les valeurs debounced changent
   const handleSearchChange = useCallback((field: keyof StudentFilters, value: string) => {
@@ -119,7 +119,7 @@ export function CandidatFilters({ filters = {}, onFiltersChange }: CandidatFilte
           <Input
             placeholder={tPlaceholders('firstName')}
             value={firstName}
-            onChange={(e) => handleSearchChange('firstName', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange('firstName', e.target.value)}
             className="ltr:pl-9 rtl:pr-9"
           />
         </div>
@@ -130,7 +130,7 @@ export function CandidatFilters({ filters = {}, onFiltersChange }: CandidatFilte
           <Input
             placeholder={tPlaceholders('lastName')}
             value={lastName}
-            onChange={(e) => handleSearchChange('lastName', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange('lastName', e.target.value)}
             className="ltr:pl-9 rtl:pr-9"
           />
         </div>
@@ -141,7 +141,7 @@ export function CandidatFilters({ filters = {}, onFiltersChange }: CandidatFilte
           <Input
             placeholder={tPlaceholders('phone')}
             value={phoneNumber}
-            onChange={(e) => handleSearchChange('phoneNumber', e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleSearchChange('phoneNumber', e.target.value)}
             className="ltr:pl-9 rtl:pr-9"
           />
         </div>

@@ -16,10 +16,10 @@ export function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps)
         <CardHeader>
           <div className="flex items-center gap-2 mb-2">
             <AlertTriangle className="h-5 w-5 text-destructive" />
-            <CardTitle>Une erreur s'est produite</CardTitle>
+            <CardTitle>Une erreur s&apos;est produite</CardTitle>
           </div>
           <CardDescription>
-            Désolé, quelque chose s'est mal passé. Veuillez réessayer.
+            D&eacute;sol&eacute;, quelque chose s&apos;est mal pass&eacute;. Veuillez r&eacute;essayer.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -38,7 +38,7 @@ export function ErrorFallback({ error, resetErrorBoundary }: ErrorFallbackProps)
               onClick={() => (window.location.href = '/')}
               variant="outline"
             >
-              Retour à l'accueil
+              Retour &agrave; l&apos;accueil
             </Button>
           </div>
         </CardContent>

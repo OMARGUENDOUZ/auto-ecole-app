@@ -192,10 +192,6 @@
     "confirm": "Confirmer",
     "actions": "Actions"
   },
-  "home": {
-    "welcome": "Bienvenue sur Auto-École Manager",
-    "subtitle": "Plateforme complète de gestion pour auto-écoles"
-  },
   "license": {
     "A1": "A1",
     "A2": "A2",
@@ -309,5 +305,18 @@
     "last30Days": "30 derniers jours",
     "thisMonth": "Ce mois",
     "thisYear": "Cette année"
+  },
+  "home": {
+    "welcome": "Bienvenue sur Auto-École Manager",
+    "subtitle": "La solution intelligente pour piloter votre établissement au quotidien.",
+    "accessApp": "Accéder à l'application",
+    "features": {
+      "candidates": "Gestion des Candidats",
+      "candidatesDesc": "Inscriptions, suivi et dossiers complets de vos élèves.",
+      "planning": "Planning des Examens",
+      "planningDesc": "Organisez vos sessions et suivez les disponibilités.",
+      "reports": "Rapports & Stats",
+      "reportsDesc": "Pilotez votre activité avec des indicateurs précis."
+    }
   }
 }
