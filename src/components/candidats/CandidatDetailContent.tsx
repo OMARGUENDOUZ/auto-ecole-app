@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import { useCandidat, useUpdateCandidat } from '@/src/hooks/use-candidats';
 import { useExams } from '@/src/hooks/use-exams';
 import {
@@ -14,7 +14,11 @@ import {
 import { Button } from '@/src/components/ui/button';
 import { Badge } from '@/src/components/ui/badge';
 import { Separator } from '@/src/components/ui/separator';
+import { useTranslations } from 'next-intl';
 import { Avatar, AvatarFallback, AvatarImage } from '@/src/components/ui/avatar';
+import { LucideIcon } from 'lucide-react';
+import { License, Student } from '@/src/types/candidat';
+import { Exam, ExamCategory } from '@/src/types/exam';
 import {
   ArrowLeft,
   Phone,
@@ -41,11 +45,7 @@ import CandidatPhotoUpload from './CandidatPhotoUpload';
 import ScheduleExamDialog from '@/src/components/exams/ScheduleExamDialog';
 import CandidatInfoEdit from './CandidatInfoEdit';
 import CandidatTabs from './CandidatTabs';
-import { useTranslations } from 'next-intl';
 
-import { LucideIcon } from 'lucide-react';
-import { License, Student } from '@/src/types/candidat';
-import { Exam } from '@/src/types/exam';
 import ExamCard from './ExamCard';
 
 // Composant pour afficher une information avec icône
@@ -112,7 +112,7 @@ function LicenseCard({ license, translations }: { license: License; translations
             </div>
           </div>
           {isExpired ? (
-            <Badge variant="destructive">{translations('expired')}</Badge>
+            <Badge variant="danger">{translations('expired')}</Badge>
           ) : isExpiringSoon ? (
             <Badge
               variant="outline"
@@ -159,7 +159,9 @@ function LicenseCard({ license, translations }: { license: License; translations
 export default function CandidatDetailContent() {
   const t = useTranslations('candidats');
   const params = useParams();
-  const id = params?.id ? parseInt(params.id as string) : undefined;
+  const searchParams = useSearchParams();
+  const idStr = searchParams.get('id');
+  const id = idStr ? parseInt(idStr) : undefined;
   const locale = (params?.locale as string) ?? 'ar';
 
   const { data: candidat, isLoading, error } = useCandidat(id || 0);
@@ -346,7 +348,7 @@ export default function CandidatDetailContent() {
                 <InfoItem
                   icon={IdCard}
                   label={t('schoolId')}
-                  value={candidat.schoolId}
+                  value={candidat.schoolId || '-'}
                 />
                 <InfoItem
                   icon={Calendar}
@@ -447,7 +449,7 @@ export default function CandidatDetailContent() {
           open={isExamDialogOpen}
           onOpenChange={setIsExamDialogOpen}
           studentId={candidat.id}
-          defaultCategory={candidat.nextExam}
+          defaultCategory={candidat.nextExam as ExamCategory}
         />
       )}
 

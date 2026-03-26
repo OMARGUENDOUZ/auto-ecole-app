@@ -2,19 +2,10 @@
 
 import { Card, CardContent } from '@/src/components/ui/card';
 import { Badge } from '@/src/components/ui/badge';
-import { Calendar, CheckCircle2, XCircle, Clock, AlertCircle, CalendarCheck } from 'lucide-react';
+import { Calendar, CheckCircle2, XCircle, Clock, AlertCircle } from 'lucide-react';
 import { formatDate } from '@/src/lib/utils';
 import { useTranslations } from 'next-intl';
-
-interface Exam {
-  id: number;
-  studentId: number;
-  examSlotId?: number;
-  category: 'CODE' | 'CONDUITE' | 'PLATEAU' | 'CIRCULATION';
-  status: 'PLANNED' | 'SCHEDULED' | 'PASSED' | 'CANCELLED';
-  result?: 'PASS' | 'FAIL' | 'PENDING' | null;
-  date?: string;
-}
+import { Exam, ExamStatus, ExamResult, ExamCategory } from '@/src/types/exam';
 
 interface ExamCardProps {
   exam: Exam;
@@ -22,23 +13,23 @@ interface ExamCardProps {
 
 export default function ExamCard({ exam }: ExamCardProps) {
   const t = useTranslations('exams');
-  
+
   const getStatusDisplay = () => {
-    if (exam.status === 'PASSED' && exam.result) {
+    if (exam.status === ExamStatus.PASSED && exam.result) {
       switch (exam.result) {
-        case 'PASS':
+        case ExamResult.PASS:
           return {
             icon: <CheckCircle2 className="w-5 h-5 text-green-600" />,
             badge: <Badge className="bg-green-600">{t('passed')}</Badge>,
             color: 'border-green-200 bg-green-50',
           };
-        case 'FAIL':
+        case ExamResult.FAIL:
           return {
             icon: <XCircle className="w-5 h-5 text-red-600" />,
             badge: <Badge className="bg-red-600">{t('failed')}</Badge>,
             color: 'border-red-200 bg-red-50',
           };
-        case 'PENDING':
+        case ExamResult.PENDING:
           return {
             icon: <Clock className="w-5 h-5 text-yellow-600" />,
             badge: <Badge className="bg-yellow-600">{t('pending')}</Badge>,
@@ -48,19 +39,13 @@ export default function ExamCard({ exam }: ExamCardProps) {
     }
 
     switch (exam.status) {
-      case 'SCHEDULED':
-        return {
-          icon: <CalendarCheck className="w-5 h-5 text-purple-600" />,
-          badge: <Badge className="bg-purple-600">{t('scheduled')}</Badge>,
-          color: 'border-purple-200',
-        };
-      case 'PLANNED':
+      case ExamStatus.PLANNED:
         return {
           icon: <Clock className="w-5 h-5 text-blue-600" />,
           badge: <Badge className="bg-blue-600">{t('planned')}</Badge>,
           color: 'border-blue-200',
         };
-      case 'CANCELLED':
+      case ExamStatus.CANCELLED:
         return {
           icon: <XCircle className="w-5 h-5 text-gray-600" />,
           badge: <Badge variant="outline">{t('cancelled')}</Badge>,
@@ -77,14 +62,12 @@ export default function ExamCard({ exam }: ExamCardProps) {
 
   const getCategoryLabel = () => {
     switch (exam.category) {
-      case 'CODE':
+      case ExamCategory.CODE:
         return 'Code de la route';
-      case 'CONDUITE':
+      case ExamCategory.CONDUITE:
         return 'Conduite pratique';
-      case 'PLATEAU':
-        return 'Épreuve plateau';
-      case 'CIRCULATION':
-        return 'Circulation';
+      case ExamCategory.CRENEAU:
+        return 'Épreuve plateau / Créneau';
       default:
         return exam.category;
     }
@@ -111,20 +94,11 @@ export default function ExamCard({ exam }: ExamCardProps) {
           </div>
         )}
 
-        {/* Afficher le statut si examen passé */}
-        {exam.status === 'PASSED' && (
-          <div className="mt-3 pt-3 border-t">
-          </div>
-        )}
-
-        {/* Message si planifié ou programmé */}
-        {(exam.status === 'PLANNED' || exam.status === 'SCHEDULED') && (
+        {/* Message si planifié */}
+        {exam.status === ExamStatus.PLANNED && (
           <div className="mt-3 pt-3 border-t">
             <p className="text-xs text-muted-foreground">
-              {exam.status === 'PLANNED' 
-                ? "L'examen sera programmé prochainement"
-                : "Examen inscrit et confirmé"
-              }
+              L examen sera programmé prochainement
             </p>
           </div>
         )}

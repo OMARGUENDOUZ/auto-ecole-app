@@ -29,10 +29,12 @@ export interface HumanName {
 
 export interface Student {
   id: number;
-  inscriptionId: string;              
-  inscriptionDate: string; 
+  inscriptionId: string;
+  inscriptionDate: string;
   govInscriptionId?: string;
   govInscriptionDate?: string;
+  schoolId?: string;
+  inscriptionSchoolDate?: string;
   status: StudentStatus;
   name: HumanName;
   birthDate: string;
@@ -45,6 +47,7 @@ export interface Student {
   requestedLicense: LicenseCategory;
   ownedLicense?: License[] | null;
   photoBase64?: string;
+  nextExam?: string;
 }
 
 

@@ -6,7 +6,8 @@ import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/src/components/ui/card';
 import { Checkbox } from '@/src/components/ui/checkbox';
-import { useRouter, useSearchParams } from '@/src/navigation';
+import { Link, useRouter, usePathname } from '@/src/navigation';
+import { useSearchParams } from 'next/navigation';
 import { LanguageSwitcher } from '@/src/components/LanguageSwitcher';
 import { toast } from 'sonner';
 import { useAuth } from '@/src/hooks/use-auth';
@@ -26,13 +27,13 @@ export default function LoginContent() {
     try {
       await login({ email, password });
       toast.success(translations('loginSuccess') || 'Connexion réussie');
-      
+
       // Rediriger vers la page demandée ou le dashboard par défaut
       const redirect = searchParams.get('redirect') || '/candidats';
       router.push(redirect);
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
+      const errorMessage = error instanceof Error
+        ? error.message
         : translations('invalidCredentials') || 'Identifiants invalides';
       toast.error(errorMessage);
     } finally {

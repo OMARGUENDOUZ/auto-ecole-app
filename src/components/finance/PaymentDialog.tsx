@@ -8,7 +8,7 @@ import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
 import { Loader2, DollarSign, CheckCircle2, CreditCard } from 'lucide-react';
 import api from '@/src/lib/api';
-import { Invoice, PaymentStatus } from '@/src/types/finance';
+import { Invoice, PaymentStatus, Payment } from '@/src/types/finance';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
 
@@ -88,7 +88,7 @@ export function PaymentDialog({ studentId, open, onOpenChange, studentName }: Pa
                                 {invoice.breakdown && (() => {
                                     try {
                                         const items = JSON.parse(invoice.breakdown);
-                                        return items.map((item: any, idx: number) => (
+                                        return items.map((item: { description: string; amount: number }, idx: number) => (
                                             <div key={idx} className="flex justify-between text-sm">
                                                 <span className="text-muted-foreground">{item.description}</span>
                                                 <span>{item.amount} DA</span>
@@ -117,7 +117,7 @@ export function PaymentDialog({ studentId, open, onOpenChange, studentName }: Pa
                             <div className="space-y-2">
                                 <h3 className="font-semibold text-sm">{t('paymentHistory')}</h3>
                                 <div className="border rounded-md divide-y">
-                                    {invoice.paymentHistory.map((payment: any) => (
+                                    {invoice.paymentHistory.map((payment: Payment) => (
                                         <div key={payment.id} className="flex justify-between p-2 text-sm">
                                             <span>{new Date(payment.date).toLocaleDateString()}</span>
                                             <span className="font-medium text-green-600">+{payment.amount} DA</span>

@@ -1,0 +1,15 @@
+  • electron-builder  version=26.0.12 os=10.0.26200
+  • loaded configuration  file=package.json ("build" field)
+  • description is missed in the package.json  appPackageFile=C:\Users\HP\Documents\Github\auto-ecole-frontend\package.json
+  • author is missed in the package.json  appPackageFile=C:\Users\HP\Documents\Github\auto-ecole-frontend\package.json
+  • skipped dependencies rebuild  reason=npmRebuild is set to false
+  • packaging       platform=win32 arch=x64 electron=39.2.7 appOutDir=dist\win-unpacked
+  ⨯ ENOENT: no such file or directory, scandir 'C:\Users\HP\Documents\Github\auto-ecole-frontend\dist\win-unpacked\resources'  failedTask=build stackTrace=Error: ENOENT: no such file or directory, scandir 'C:\Users\HP\Documents\Github\auto-ecole-frontend\dist\win-unpacked\resources'
+    at readdir (node:internal/fs/promises:957:18)
+    at computeData (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\app-builder-lib\src\asar\integrity.ts:32:21)
+    at WinPackager.doPack (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\app-builder-lib\src\platformPackager.ts:328:25)
+    at WinPackager.pack (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\app-builder-lib\src\platformPackager.ts:168:5)
+    at Packager.doBuild (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\app-builder-lib\src\packager.ts:491:9)
+    at executeFinally (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\builder-util\src\promise.ts:12:14)
+    at Packager.build (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\app-builder-lib\src\packager.ts:425:31)
+    at executeFinally (C:\Users\HP\Documents\Github\auto-ecole-frontend\node_modules\builder-util\src\promise.ts:12:14)

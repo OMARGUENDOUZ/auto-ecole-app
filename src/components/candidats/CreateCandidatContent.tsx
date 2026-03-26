@@ -34,6 +34,7 @@ import { useTranslations } from 'next-intl';
 import { GENDER_OPTIONS, LICENSE_OPTIONS } from '@/src/lib/constants';
 import OwnedLicensesField from './OwnedLicensesField';
 import { compressImage, validateImageFile, getBase64Size } from '@/src/lib/image-utils';
+import { StudentStatus, LicenseCategory, GenderType } from '@/src/types/candidat';
 
 // Schema de validation pour un permis
 const licenseSchema = z.object({
@@ -143,18 +144,18 @@ export default function CreateCandidatContent() {
       const base64 = await compressImage(file);
       setPhotoPreview(base64);
       form.setValue('photoBase64', base64);
-      
+
       const sizeKB = getBase64Size(base64);
       if (sizeKB > 500) {
         toast.success(
-          logTranslations('imageCompressed') || 
+          logTranslations('imageCompressed') ||
           `Image compressée à ${sizeKB}KB`
         );
       }
     } catch (error) {
       toast.error(
-        error instanceof Error 
-          ? error.message 
+        error instanceof Error
+          ? error.message
           : logTranslations('imageUploadError') || 'Erreur lors de l\'upload de l\'image'
       );
     }
@@ -168,51 +169,51 @@ export default function CreateCandidatContent() {
           lastName: data.lastName,
         },
         birthDate: new Date(data.birthDate).toISOString(),
-        placeOfBirth: data.placeOfBirth || null,
-        gender: data.gender || null,
+        placeOfBirth: data.placeOfBirth || undefined,
+        gender: (data.gender as GenderType) || undefined,
         phoneNumber: data.phoneNumber,
         address: data.address,
         fatherName:
           data.fatherFirstName || data.fatherLastName
             ? {
-                firstName: data.fatherFirstName || '',
-                lastName: data.fatherLastName || '',
-              }
-            : null,
+              firstName: data.fatherFirstName || '',
+              lastName: data.fatherLastName || '',
+            }
+            : undefined,
         motherName:
           data.motherFirstName || data.motherLastName
             ? {
-                firstName: data.motherFirstName || '',
-                lastName: data.motherLastName || '',
-              }
-            : null,
-        requestedLicense: data.requestedLicense,
+              firstName: data.motherFirstName || '',
+              lastName: data.motherLastName || '',
+            }
+            : undefined,
+        requestedLicense: data.requestedLicense as LicenseCategory,
         inscriptionSchoolDate: new Date(data.inscriptionSchoolDate).toISOString(),
         inscriptionDate: data.inscriptionDate
           ? new Date(data.inscriptionDate).toISOString()
           : new Date(data.inscriptionSchoolDate).toISOString(),
-        inscriptionId: data.inscriptionId || null,
+        inscriptionId: data.inscriptionId || undefined,
         schoolId: data.schoolId,
-        status: 'REGISTERED',
+        status: StudentStatus.REGISTERED,
         ownedLicense:
           data.ownedLicense?.map((license) => ({
             obtentionDate: new Date(license.obtentionDate).toISOString(),
             licenseNumber: parseInt(license.licenseNumber),
-            licenseCategory: license.licenseCategory,
+            licenseCategory: license.licenseCategory as LicenseCategory,
             issueDate: new Date(license.issueDate).toISOString(),
             issuingAuthority: license.issuingAuthority,
             expirationDate: new Date(license.expirationDate).toISOString(),
           })) || [],
-        photoBase64: data.photoBase64,
+        photoBase64: data.photoBase64 || undefined,
       };
 
       const newCandidat = await createCandidat.mutateAsync(payload);
       toast.success(logTranslations('createCandidatSuccess'));
       router.push(`/${locale}/candidats/${newCandidat.id}`);
     } catch (error: unknown) {
-      const errorMessage = error instanceof Error 
-        ? error.message 
-        : (error as { response?: { data?: { message?: string } } })?.response?.data?.message 
+      const errorMessage = error instanceof Error
+        ? error.message
+        : (error as { response?: { data?: { message?: string } } })?.response?.data?.message
         || logTranslations('errorInCreation');
       toast.error(errorMessage);
     }

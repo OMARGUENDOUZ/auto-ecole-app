@@ -10,8 +10,8 @@ import { Textarea } from '@/src/components/ui/textarea';
 import { useUpdateCandidat } from '@/src/hooks/use-candidats';
 import { toast } from 'sonner';
 import { useTranslations } from 'next-intl';
-import { GENDER_OPTIONS, LICENSE_OPTIONS} from '@/src/lib/constants';
-import { Student } from '@/src/types/candidat';
+import { GENDER_OPTIONS, LICENSE_OPTIONS } from '@/src/lib/constants';
+import { Student, GenderType } from '@/src/types/candidat';
 
 interface CandidatInfoEditProps {
   candidat: Student;
@@ -23,7 +23,7 @@ export default function CandidatInfoEdit({ candidat, onClose }: CandidatInfoEdit
   const t = useTranslations('candidats');
   const tLicense = useTranslations('license');
   const tPlaceholders = useTranslations('placeHolders');
-  
+
   const [formData, setFormData] = useState({
     inscriptionId: candidat.inscriptionId || '',
     phoneNumber: candidat.phoneNumber || '',
@@ -43,45 +43,45 @@ export default function CandidatInfoEdit({ candidat, onClose }: CandidatInfoEdit
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
- const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setIsSaving(true);
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
 
-  try {
-    await updateCandidat.mutateAsync({
-      id: candidat.id,
-      name: candidat.name,
-      birthDate: candidat.birthDate,
-      schoolId: candidat.schoolId,
-      status: candidat.status,
-      inscriptionSchoolDate: candidat.inscriptionSchoolDate,
-      inscriptionDate: candidat.inscriptionDate,
-      ownedLicense: candidat.ownedLicense || [],
-      photoBase64: candidat.photoBase64,
-      inscriptionId: formData.inscriptionId || null,
-      phoneNumber: formData.phoneNumber,
-      address: formData.address,
-      placeOfBirth: formData.placeOfBirth || null,
-      gender: formData.gender || null,
-      requestedLicense: formData.requestedLicense,
-      fatherName: {
-        firstName: formData.fatherFirstName,
-        lastName: formData.fatherLastName,
-      },
-      motherName: {
-        firstName: formData.motherFirstName,
-        lastName: formData.motherLastName,
-      },
-    });
-    
-    toast.success(t('updateSuccess'));
-    onClose();
-  } catch (error) {
-    toast.error(t('updateError'));
-  } finally {
-    setIsSaving(false);
-  }
-};
+    try {
+      await updateCandidat.mutateAsync({
+        id: candidat.id,
+        name: candidat.name,
+        birthDate: candidat.birthDate,
+        schoolId: candidat.schoolId,
+        status: candidat.status,
+        inscriptionSchoolDate: candidat.inscriptionSchoolDate,
+        inscriptionDate: candidat.inscriptionDate,
+        ownedLicense: candidat.ownedLicense || [],
+        photoBase64: candidat.photoBase64,
+        inscriptionId: formData.inscriptionId || undefined,
+        phoneNumber: formData.phoneNumber,
+        address: formData.address,
+        placeOfBirth: formData.placeOfBirth || undefined,
+        gender: (formData.gender as any) || undefined,
+        requestedLicense: formData.requestedLicense,
+        fatherName: {
+          firstName: formData.fatherFirstName,
+          lastName: formData.fatherLastName,
+        },
+        motherName: {
+          firstName: formData.motherFirstName,
+          lastName: formData.motherLastName,
+        },
+      });
+
+      toast.success(t('updateSuccess'));
+      onClose();
+    } catch (error) {
+      toast.error(t('updateError'));
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
 
   return (
@@ -142,12 +142,12 @@ export default function CandidatInfoEdit({ candidat, onClose }: CandidatInfoEdit
                   <SelectTrigger className="mt-1">
                     <SelectValue placeholder={t('select')} />
                   </SelectTrigger>
-                  <SelectContent> 
-                              {GENDER_OPTIONS.map((option) => (
-                                <SelectItem key={option.value} value={option.value}>
-                                  {t(option.label)}
-                                </SelectItem>
-                              ))}
+                  <SelectContent>
+                    {GENDER_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {t(option.label)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -175,11 +175,11 @@ export default function CandidatInfoEdit({ candidat, onClose }: CandidatInfoEdit
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-            {LICENSE_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {tLicense(option.labelKey)}
-              </SelectItem>
-            ))}
+                    {LICENSE_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {tLicense(option.labelKey)}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>

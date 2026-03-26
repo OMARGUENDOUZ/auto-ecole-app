@@ -1,6 +1,10 @@
-import { redirect } from 'next/navigation';
+import { Suspense } from 'react';
 import LoginContent from '@/src/components/auth/LoginContent';
 
 export default function LoginPage() {
-  return <LoginContent />;
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginContent />
+    </Suspense>
+  );
 }

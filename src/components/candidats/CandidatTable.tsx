@@ -196,7 +196,7 @@ export function CandidatTable({ candidats, isLoading }: CandidatTableProps) {
                     >
                       <CreditCard className="h-4 w-4 text-green-600" />
                     </Button>
-                    <Link href={`/${locale}/candidats/${candidat.id}`}>
+                    <Link href={`/${locale}/candidats/details?id=${candidat.id}`}>
                       <Button variant="ghost" size="sm">
                         <Eye className="h-4 w-4" />
                       </Button>

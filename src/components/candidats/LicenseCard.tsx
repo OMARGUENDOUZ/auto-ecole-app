@@ -47,13 +47,12 @@ export default function LicenseCard({
 
   return (
     <Card
-      className={`border-l-4 ${
-        isExpired
+      className={`border-l-4 ${isExpired
           ? 'border-l-destructive'
           : isExpiringSoon
-          ? 'border-l-yellow-500'
-          : 'border-l-green-500'
-      }`}
+            ? 'border-l-yellow-500'
+            : 'border-l-green-500'
+        }`}
     >
       <CardContent className="pt-6">
         <div className="flex items-start justify-between mb-4">
@@ -71,7 +70,7 @@ export default function LicenseCard({
             </div>
           </div>
           {isExpired ? (
-            <Badge variant="destructive">{translations('expired')}</Badge>
+            <Badge variant="danger">{translations('expired')}</Badge>
           ) : isExpiringSoon ? (
             <Badge
               variant="outline"

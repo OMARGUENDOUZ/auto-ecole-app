@@ -13,8 +13,7 @@ import {
 import { Button } from '@/src/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/src/components/ui/select';
 import { Label } from '@/src/components/ui/label';
-import { ExamSlot, ExamCategory, ExamStatus } from '@/src/types/exam';
-import { Exam } from '@/src/types/ExamStudent';
+import { ExamSlot, ExamCategory, ExamStatus, Exam } from '@/src/types/exam';
 import { useCreateExamStudent } from '@/src/hooks/use-exam-slots';
 import { useExams } from '@/src/hooks/use-exams';
 import api from '@/src/lib/api';

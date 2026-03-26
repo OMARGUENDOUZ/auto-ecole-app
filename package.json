@@ -1,6 +1,8 @@
 {
   "name": "auto-ecole-frontend",
   "version": "1.0.0",
+  "description": "Application de gestion pour auto-école",
+  "author": "Auto-Ecole",
   "private": true,
   "main": "electron/main.js",
   "scripts": {
@@ -19,6 +21,7 @@
     "directories": {
       "output": "dist"
     },
+    "npmRebuild": false,
     "files": [
       "electron/**/*",
       "out/**/*",

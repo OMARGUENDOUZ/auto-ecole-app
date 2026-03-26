@@ -56,7 +56,7 @@ export function CandidatFilters({ filters = {}, onFiltersChange }: CandidatFilte
         page: 0, // Reset à la première page lors d'un changement de filtre
       });
     }
-  }, [debouncedFirstName, debouncedLastName, debouncedPhoneNumber, filters?.firstName, filters?.lastName, filters?.phoneNumber, onFiltersChange]);
+  }, [debouncedFirstName, debouncedLastName, debouncedPhoneNumber, filters, onFiltersChange]);
 
   // Synchroniser les états locaux avec les filtres externes (si changés de l'extérieur, ex: reset)
   useEffect(() => {

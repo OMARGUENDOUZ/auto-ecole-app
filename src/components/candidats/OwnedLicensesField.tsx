@@ -1,6 +1,6 @@
 'use client';
 
-import { Control, useFieldArray, useFormContext } from 'react-hook-form';
+import { Control, useFieldArray } from 'react-hook-form';
 import { Button } from '@/src/components/ui/button';
 import { Input } from '@/src/components/ui/input';
 import { Label } from '@/src/components/ui/label';
@@ -14,9 +14,7 @@ import {
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
-  CardTitle,
 } from '@/src/components/ui/card';
 import {
   FormControl,
@@ -28,10 +26,9 @@ import {
 import { Plus, Trash2, Award } from 'lucide-react';
 import { LICENSE_OPTIONS } from '@/src/lib/constants';
 import { useTranslations } from 'next-intl';
-import { CreateCandidatFormData } from './CreateCandidatContent';
 
 interface OwnedLicensesFieldProps {
-  control: Control<CreateCandidatFormData>;
+  control: Control<any>;
   name?: string;
 }
 
@@ -42,7 +39,6 @@ export default function OwnedLicensesField({
   const t = useTranslations('candidats');
   const tLicense = useTranslations('license');
 
-  // useFieldArray pour gérer le tableau dynamique
   const { fields, append, remove } = useFieldArray({
     control,
     name,
@@ -77,7 +73,6 @@ export default function OwnedLicensesField({
           size="sm"
           onClick={addLicense}
           className="gap-2"
-          aria-label={t('addLicense')}
         >
           <Plus className="h-4 w-4" />
           {t('addLicense')}
@@ -104,9 +99,9 @@ export default function OwnedLicensesField({
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-3" role="list" aria-label={t('ownedLicensesList')}>
+        <div className="space-y-3">
           {fields.map((field, index) => (
-            <Card key={field.id} role="listitem" className="overflow-hidden">
+            <Card key={field.id} className="overflow-hidden">
               <CardHeader className="pb-3 bg-slate-50 dark:bg-slate-900/20">
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex items-center gap-3 flex-1 min-w-0">
@@ -115,10 +110,10 @@ export default function OwnedLicensesField({
                     </div>
                     <div className="flex-1 min-w-0">
                       <p className="text-sm font-medium">
-                        {t('license')} {tLicense(`license.${fields[index]?.licenseCategory || 'B'}`)}
+                        {t('license')} {(fields[index] as any).licenseCategory || 'B'}
                       </p>
                       <p className="text-xs text-muted-foreground truncate">
-                        {t('licenseNumber')}: {fields[index]?.licenseNumber || '-'}
+                        {t('licenseNumber')}: {(fields[index] as any).licenseNumber || '-'}
                       </p>
                     </div>
                   </div>
@@ -128,7 +123,6 @@ export default function OwnedLicensesField({
                     size="sm"
                     className="h-8 w-8 p-0 text-destructive hover:text-destructive hover:bg-destructive/10 flex-shrink-0"
                     onClick={() => remove(index)}
-                    aria-label={`${t('removeLicense')} ${index + 1}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </Button>
@@ -136,7 +130,6 @@ export default function OwnedLicensesField({
               </CardHeader>
               <CardContent className="pt-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  {/* Catégorie */}
                   <FormField
                     control={control}
                     name={`${name}.${index}.licenseCategory`}
@@ -150,7 +143,7 @@ export default function OwnedLicensesField({
                           defaultValue={field.value}
                         >
                           <FormControl>
-                            <SelectTrigger aria-label={t('licenseCategory')}>
+                            <SelectTrigger>
                               <SelectValue placeholder={t('selectCategory')} />
                             </SelectTrigger>
                           </FormControl>
@@ -167,7 +160,6 @@ export default function OwnedLicensesField({
                     )}
                   />
 
-                  {/* Numéro de permis */}
                   <FormField
                     control={control}
                     name={`${name}.${index}.licenseNumber`}
@@ -180,7 +172,6 @@ export default function OwnedLicensesField({
                           <Input
                             {...field}
                             placeholder={t('licenseNumberPlaceholder')}
-                            aria-describedby={`license-number-desc-${index}`}
                           />
                         </FormControl>
                         <FormMessage />
@@ -188,7 +179,6 @@ export default function OwnedLicensesField({
                     )}
                   />
 
-                  {/* Date d'obtention */}
                   <FormField
                     control={control}
                     name={`${name}.${index}.obtentionDate`}
@@ -201,7 +191,6 @@ export default function OwnedLicensesField({
                           <Input
                             {...field}
                             type="date"
-                            max={new Date().toISOString().split('T')[0]}
                           />
                         </FormControl>
                         <FormMessage />
@@ -209,7 +198,6 @@ export default function OwnedLicensesField({
                     )}
                   />
 
-                  {/* Date de délivrance */}
                   <FormField
                     control={control}
                     name={`${name}.${index}.issueDate`}
@@ -226,7 +214,6 @@ export default function OwnedLicensesField({
                     )}
                   />
 
-                  {/* Autorité de délivrance */}
                   <FormField
                     control={control}
                     name={`${name}.${index}.issuingAuthority`}
@@ -246,7 +233,6 @@ export default function OwnedLicensesField({
                     )}
                   />
 
-                  {/* Date d'expiration */}
                   <FormField
                     control={control}
                     name={`${name}.${index}.expirationDate`}
