@@ -165,6 +165,7 @@
     "password": "كلمة المرور",
     "rememberMe": "تذكرني",
     "loginButton": "دخول",
+    "loading": "جاري التحميل...",
     "logout": "تسجيل الخروج",
     "invalidCredentials": "بريد إلكتروني أو كلمة مرور غير صحيحة",
     "loginSuccess": "تم تسجيل الدخول بنجاح",

@@ -96,8 +96,8 @@ export default function HomePage() {
         {/* Support Section Placeholder */}
         <section className="py-20 container text-center">
           <div className="max-w-md mx-auto p-8 rounded-3xl border bg-gradient-to-b from-background to-muted/20">
-            <span className="text-sm font-semibold uppercase tracking-wider text-primary mb-4 block">Version Desktop</span>
-            <p className="text-muted-foreground">Utilisez l&apos;application sur votre PC avec une base de donn&eacute;es locale s&eacute;curis&eacute;e.</p>
+            <span className="text-sm font-semibold uppercase tracking-wider text-primary mb-4 block">Version Web</span>
+            <p className="text-muted-foreground">Acc&eacute;dez &agrave; l&apos;application depuis votre navigateur avec une interface multilingue et un tableau de bord prot&eacute;g&eacute;.</p>
           </div>
         </section>
       </main>

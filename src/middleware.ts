@@ -13,11 +13,27 @@ const intlMiddleware = createMiddleware({
 // Routes protégées qui nécessitent une authentification
 const protectedRoutes = ['/candidats', '/moniteurs', '/planning-exams', '/rapports'];
 
+function getLocaleFromPathname(pathname: string) {
+  const segments = pathname.split('/').filter(Boolean);
+  const firstSegment = segments[0];
+
+  if (firstSegment && routing.locales.includes(firstSegment as (typeof routing.locales)[number])) {
+    return firstSegment;
+  }
+
+  return routing.defaultLocale;
+}
+
+function withLocale(pathname: string, locale: string) {
+  return `/${locale}${pathname.startsWith('/') ? pathname : `/${pathname}`}`;
+}
+
 export function middleware(request: NextRequest) {
   // D'abord appliquer le middleware i18n
   const response = intlMiddleware(request);
   
   const pathname = request.nextUrl.pathname;
+  const locale = getLocaleFromPathname(pathname);
   
   // Vérifier si la route est protégée
   const isProtectedRoute = protectedRoutes.some(route => 
@@ -32,7 +48,7 @@ export function middleware(request: NextRequest) {
     
     if (!token) {
       // Rediriger vers la page de login
-      const loginUrl = new URL('/auth/login', request.url);
+      const loginUrl = new URL(withLocale('/auth/login', locale), request.url);
       loginUrl.searchParams.set('redirect', pathname);
       return NextResponse.redirect(loginUrl);
     }
@@ -44,7 +60,7 @@ export function middleware(request: NextRequest) {
                   request.headers.get('authorization')?.replace('Bearer ', '');
     
     if (token) {
-      return NextResponse.redirect(new URL('/candidats', request.url));
+      return NextResponse.redirect(new URL(withLocale('/candidats', locale), request.url));
     }
   }
   

@@ -4,42 +4,13 @@
   "description": "Application de gestion pour auto-école",
   "author": "Auto-Ecole",
   "private": true,
-  "main": "electron/main.js",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "type-check": "tsc --noEmit",
-    "electron-dev": "electron .",
-    "electron-build": "next build && electron-builder"
-  },
-  "build": {
-    "appId": "com.autoecole.manager",
-    "productName": "Auto-Ecole Manager",
-    "directories": {
-      "output": "dist"
-    },
-    "npmRebuild": false,
-    "files": [
-      "electron/**/*",
-      "out/**/*",
-      "carly-backend.jar"
-    ],
-    "extraResources": [
-      {
-        "from": "carly-backend.jar",
-        "to": "backend/carly-backend.jar"
-      }
-    ],
-    "win": {
-      "target": "nsis"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "type-check": "tsc --noEmit"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -81,9 +52,6 @@
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "autoprefixer": "^10.4.19",
-    "electron": "^39.2.7",
-    "electron-builder": "^26.0.12",
-    "electron-is-dev": "^3.0.1",
     "eslint": "^8.57.0",
     "eslint-config-next": "^15.0.0",
     "postcss": "^8.4.38",

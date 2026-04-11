@@ -1,10 +1,54 @@
 import api from './api';
 import { LoginCredentials, AuthResponse, User } from '@/src/types/auth';
 import { safeLocalStorage } from '@/src/hooks/use-storage';
+import { routing } from '@/src/routing';
 
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
 const USER_KEY = 'auth_user';
+const COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
+
+function setAuthCookie(token: string) {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  document.cookie = `${TOKEN_KEY}=${encodeURIComponent(token)}; Path=/; Max-Age=${COOKIE_MAX_AGE}; SameSite=Lax`;
+}
+
+function removeAuthCookie() {
+  if (typeof document === 'undefined') {
+    return;
+  }
+
+  document.cookie = `${TOKEN_KEY}=; Path=/; Max-Age=0; SameSite=Lax`;
+}
+
+function syncCookieWithStorage() {
+  const token = safeLocalStorage().getItem(TOKEN_KEY);
+
+  if (token) {
+    setAuthCookie(token);
+  } else {
+    removeAuthCookie();
+  }
+}
+
+export function getLocaleFromPathname(pathname: string): string {
+  const segments = pathname.split('/').filter(Boolean);
+  const firstSegment = segments[0];
+
+  if (firstSegment && routing.locales.includes(firstSegment as (typeof routing.locales)[number])) {
+    return firstSegment;
+  }
+
+  return routing.defaultLocale;
+}
+
+export function getLocalizedLoginPath(pathname?: string): string {
+  const locale = getLocaleFromPathname(pathname || '');
+  return `/${locale}/auth/login`;
+}
 
 export const authService = {
   /**
@@ -16,6 +60,7 @@ export const authService = {
     // Stocker les tokens et l'utilisateur
     const storage = safeLocalStorage();
     storage.setItem(TOKEN_KEY, data.token);
+    setAuthCookie(data.token);
     if (data.refreshToken) {
       storage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
     }
@@ -41,6 +86,7 @@ export const authService = {
     storage.removeItem(TOKEN_KEY);
     storage.removeItem(REFRESH_TOKEN_KEY);
     storage.removeItem(USER_KEY);
+    removeAuthCookie();
   },
 
   /**
@@ -60,6 +106,7 @@ export const authService = {
       });
       
       storage.setItem(TOKEN_KEY, data.token);
+      setAuthCookie(data.token);
       return data.token;
     } catch (error) {
       // Si le refresh échoue, déconnecter l'utilisateur
@@ -96,6 +143,10 @@ export const authService = {
    */
   isAuthenticated(): boolean {
     return !!this.getToken();
+  },
+
+  syncSession(): void {
+    syncCookieWithStorage();
   },
 };
 

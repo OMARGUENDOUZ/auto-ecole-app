@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/src/lib/api';
 import { Student, StudentFilters, PaginatedResponse } from '@/src/types/candidat';
 import { toast } from 'sonner';
@@ -9,6 +9,8 @@ export function useCandidats(filters?: StudentFilters) {
 
   return useQuery({
     queryKey: ['candidats', filters],
+    placeholderData: keepPreviousData,
+    staleTime: 30 * 1000,
     queryFn: async () => {
       const params = {
         ...filters,
@@ -49,6 +51,7 @@ export function useCandidats(filters?: StudentFilters) {
 export function useCandidat(id: number) {
   return useQuery({
     queryKey: ['candidat', id],
+    staleTime: 30 * 1000,
     queryFn: async () => {
       const { data } = await api.get<Student>(`/Student/${id}`);
       return data;

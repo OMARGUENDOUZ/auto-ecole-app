@@ -8,7 +8,7 @@ export function useInstructors() {
     return useQuery({
         queryKey: ['instructors'],
         queryFn: async () => {
-            const { data } = await api.get('/moniteur'); // Adjust endpoint as needed
+            const { data } = await api.get('/Instructor');
             return data as Instructor[];
         },
     });
@@ -20,7 +20,7 @@ export function useCreateInstructor() {
 
     return useMutation({
         mutationFn: async (newInstructor: CreateInstructorInput) => {
-            const { data } = await api.post('/moniteur', newInstructor);
+            const { data } = await api.post('/Instructor', newInstructor);
             return data;
         },
         onSuccess: () => {
@@ -39,7 +39,7 @@ export function useUpdateInstructor() {
 
     return useMutation({
         mutationFn: async (updatedInstructor: UpdateInstructorInput) => {
-            const { data } = await api.put(`/moniteur/${updatedInstructor.id}`, updatedInstructor);
+            const { data } = await api.put(`/Instructor/${updatedInstructor.id}`, updatedInstructor);
             return data;
         },
         onSuccess: () => {
@@ -58,7 +58,7 @@ export function useDeleteInstructor() {
 
     return useMutation({
         mutationFn: async (id: number) => {
-            await api.delete(`/moniteur/${id}`);
+            await api.delete(`/Instructor/${id}`);
         },
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ['instructors'] });

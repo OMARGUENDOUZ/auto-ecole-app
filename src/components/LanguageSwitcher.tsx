@@ -1,5 +1,6 @@
 'use client';
 
+import { useTransition } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { useRouter, usePathname } from '@/src/navigation';
 import { Button } from '@/src/components/ui/button';
@@ -17,9 +18,16 @@ export function LanguageSwitcher() {
   const router = useRouter();
   const pathname = usePathname();
   const t = useTranslations('common');
+  const [isPending, startTransition] = useTransition();
 
   const handleLanguageChange = (newLocale: string) => {
-    router.push(pathname, { locale: newLocale });
+    if (newLocale === locale) {
+      return;
+    }
+
+    startTransition(() => {
+      router.replace(pathname, { locale: newLocale });
+    });
   };
 
   const languageNames: Record<string, string> = {
@@ -30,7 +38,7 @@ export function LanguageSwitcher() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+        <Button variant="outline" size="sm" className="gap-2" disabled={isPending}>
           <Globe className="w-4 h-4" />
           <span>{languageNames[locale] || locale.toUpperCase()}</span>
         </Button>
@@ -40,6 +48,7 @@ export function LanguageSwitcher() {
           <DropdownMenuItem
             key={lang}
             onClick={() => handleLanguageChange(lang)}
+            disabled={isPending}
             className={locale === lang ? 'bg-accent' : ''}
           >
             {languageNames[lang]}

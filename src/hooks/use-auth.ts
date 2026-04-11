@@ -11,6 +11,7 @@ export function useAuth() {
   // Initialiser l'auth au montage du composant
   useEffect(() => {
     initialize();
+    authService.syncSession();
   }, [initialize]);
 
   const login = async (credentials: LoginCredentials): Promise<AuthResponse> => {

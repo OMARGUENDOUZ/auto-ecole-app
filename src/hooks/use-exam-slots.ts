@@ -1,4 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/src/lib/api';
 import { ExamSlot, ExamStudent } from '@/src/types/exam';
 import { toast } from 'sonner';
@@ -6,6 +6,8 @@ import { toast } from 'sonner';
 export function useExamSlots(month?: string) {
   return useQuery({
     queryKey: ['exam-slots', month],
+    placeholderData: keepPreviousData,
+    staleTime: 60 * 1000,
     queryFn: async () => {
       const params = month ? { month } : {};
       const { data } = await api.get<ExamSlot[]>('/ExamSlot', { params });
@@ -37,6 +39,7 @@ export function useCreateExamSlot() {
 export function useExamStudents(examSlotId?: number) {
   return useQuery({
     queryKey: ['exam-students', examSlotId],
+    staleTime: 30 * 1000,
     queryFn: async () => {
       const params = examSlotId ? { examSlotId } : {};
       const { data } = await api.get<ExamStudent[]>('/ExamStudent', { params });

@@ -7,10 +7,8 @@ const withNextIntl = createNextIntlPlugin('./src/i18n.ts');
 const imageHost = process.env.NEXT_PUBLIC_IMAGE_HOST;
 
 const nextConfig: NextConfig = {
-  output: 'export',
-  distDir: 'out',
   images: {
-    unoptimized: true, // Required for static export
+    unoptimized: true,
   },
   typescript: {
     ignoreBuildErrors: false
