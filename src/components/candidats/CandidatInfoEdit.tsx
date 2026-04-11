@@ -50,27 +50,25 @@ export default function CandidatInfoEdit({ candidat, onClose }: CandidatInfoEdit
     try {
       await updateCandidat.mutateAsync({
         id: candidat.id,
-        name: candidat.name,
-        birthDate: candidat.birthDate,
-        schoolId: candidat.schoolId,
-        status: candidat.status,
-        inscriptionSchoolDate: candidat.inscriptionSchoolDate,
-        inscriptionDate: candidat.inscriptionDate,
-        ownedLicense: candidat.ownedLicense || [],
-        photoBase64: candidat.photoBase64,
-        inscriptionId: formData.inscriptionId || undefined,
-        phoneNumber: formData.phoneNumber,
-        address: formData.address,
-        placeOfBirth: formData.placeOfBirth || undefined,
-        gender: (formData.gender as any) || undefined,
-        requestedLicense: formData.requestedLicense,
-        fatherName: {
-          firstName: formData.fatherFirstName,
-          lastName: formData.fatherLastName,
-        },
-        motherName: {
-          firstName: formData.motherFirstName,
-          lastName: formData.motherLastName,
+        payload: {
+          name: candidat.name,
+          birthDate: candidat.birthDate,
+          status: candidat.status,
+          gender: (formData.gender as GenderType) || null,
+          address: formData.address,
+          phoneNumber: formData.phoneNumber,
+          requestedLicense: formData.requestedLicense as import('@/src/types/common').LicenseCategory,
+          schoolId: candidat.schoolId,
+          placeOfBirth: formData.placeOfBirth || undefined,
+          fatherName: {
+            firstName: formData.fatherFirstName,
+            lastName: formData.fatherLastName,
+          },
+          motherName: {
+            firstName: formData.motherFirstName,
+            lastName: formData.motherLastName,
+          },
+          photoBase64: candidat.photoBase64,
         },
       });
 

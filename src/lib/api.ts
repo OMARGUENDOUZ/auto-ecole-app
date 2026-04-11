@@ -1,21 +1,13 @@
 import axios from 'axios';
 import { safeLocalStorage } from '@/src/hooks/use-storage';
-import { routing } from '@/src/routing';
+import { getLocalizedLoginPath } from '@/src/lib/navigation';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
-
-function getLocalizedLoginPath(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean);
-  const firstSegment = segments[0];
-  const locale = firstSegment && routing.locales.includes(firstSegment as (typeof routing.locales)[number])
-    ? firstSegment
-    : routing.defaultLocale;
-
-  return `/${locale}/auth/login`;
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
 
 export const api = axios.create({
   baseURL: API_URL,
+  timeout: 10000,
+  withCredentials: true, // envoie le cookie HttpOnly auth_token (Sprint 3)
   headers: {
     'Content-Type': 'application/json',
   },
@@ -41,13 +33,32 @@ api.interceptors.response.use(
       storage.removeItem('auth_token');
       storage.removeItem('refresh_token');
       storage.removeItem('auth_user');
+
+      // Nettoyer le cookie non-HttpOnly résiduel si présent
       if (typeof document !== 'undefined') {
-        document.cookie = 'auth_token=; Path=/; Max-Age=0; SameSite=Lax';
+        document.cookie = 'auth_token=; Path=/; Max-Age=0; SameSite=Strict';
       }
-      
-      // Rediriger vers login si on est côté client
+
+      /**
+       * Pattern event-driven : au lieu d'appeler window.location.href directement
+       * (ce qui casserait le router Next.js et les tests), on dispatch un CustomEvent.
+       *
+       * Le composant AuthListener (ou le middleware) écoute cet événement et
+       * effectue la redirection via useRouter().push() — ce qui préserve l'état React.
+       *
+       * Écouter avec :
+       *   window.addEventListener('auth:unauthorized', (e) => {
+       *     router.push(e.detail.redirectTo);
+       *   });
+       */
       if (typeof window !== 'undefined') {
-        window.location.href = getLocalizedLoginPath(window.location.pathname);
+        window.dispatchEvent(
+          new CustomEvent('auth:unauthorized', {
+            detail: {
+              redirectTo: getLocalizedLoginPath(window.location.pathname),
+            },
+          })
+        );
       }
     }
     return Promise.reject(error);
@@ -55,3 +66,4 @@ api.interceptors.response.use(
 );
 
 export default api;
+

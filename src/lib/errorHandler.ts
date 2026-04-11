@@ -1,5 +1,6 @@
 import { AxiosError } from 'axios';
 import { logger } from './logger';
+import { ApiError } from '@/src/types/common';
 
 /**
  * Gestionnaire d'erreurs centralisé
@@ -10,6 +11,15 @@ export interface ErrorMessage {
   title: string;
   message: string;
   code?: string;
+  /** Erreurs de validation par champ (issues du backend sur 400 / 422) */
+  fieldErrors?: Record<string, string>;
+}
+
+/** Structure d'erreur retournée par le backend */
+interface BackendApiError {
+  code: string;
+  message: string;
+  details?: Record<string, string>;
 }
 
 export class ErrorHandler {
@@ -31,7 +41,7 @@ export class ErrorHandler {
     logger.error('Erreur inconnue', error);
     return {
       title: 'Erreur',
-      message: 'Une erreur inattendue s\'est produite. Veuillez réessayer.',
+      message: "Une erreur inattendue s'est produite. Veuillez réessayer.",
     };
   }
 
@@ -40,21 +50,30 @@ export class ErrorHandler {
    */
   private static handleAxiosError(error: AxiosError): ErrorMessage {
     const status = error.response?.status;
-    const data = error.response?.data as { message?: string; error?: string } | undefined;
+    const data = error.response?.data as BackendApiError | { message?: string; error?: string } | undefined;
+
+    // Extraire les champs depuis BackendApiError si disponibles
+    const backendError = data as BackendApiError | undefined;
+    const fieldErrors = backendError?.details;
+    const userMessage =
+      backendError?.message ||
+      (data as { message?: string })?.message ||
+      (data as { error?: string })?.error;
 
     logger.error('Erreur API', {
       status,
       url: error.config?.url,
       method: error.config?.method,
-      message: data?.message || data?.error || error.message,
+      message: userMessage || error.message,
     });
 
     switch (status) {
       case 400:
         return {
           title: 'Requête invalide',
-          message: data?.message || data?.error || 'Les données envoyées sont invalides.',
+          message: userMessage || 'Les données envoyées sont invalides.',
           code: 'BAD_REQUEST',
+          fieldErrors,
         };
 
       case 401:
@@ -67,35 +86,36 @@ export class ErrorHandler {
       case 403:
         return {
           title: 'Accès refusé',
-          message: 'Vous n\'avez pas les permissions nécessaires pour effectuer cette action.',
+          message: "Vous n'avez pas les permissions nécessaires pour effectuer cette action.",
           code: 'FORBIDDEN',
         };
 
       case 404:
         return {
           title: 'Ressource introuvable',
-          message: 'La ressource demandée n\'a pas été trouvée.',
+          message: "La ressource demandée n'a pas été trouvée.",
           code: 'NOT_FOUND',
         };
 
       case 409:
         return {
           title: 'Conflit',
-          message: data?.message || data?.error || 'Cette ressource existe déjà.',
+          message: userMessage || 'Cette ressource existe déjà.',
           code: 'CONFLICT',
         };
 
       case 422:
         return {
           title: 'Erreur de validation',
-          message: data?.message || data?.error || 'Les données fournies ne sont pas valides.',
+          message: userMessage || 'Les données fournies ne sont pas valides.',
           code: 'VALIDATION_ERROR',
+          fieldErrors,
         };
 
       case 500:
         return {
           title: 'Erreur serveur',
-          message: 'Une erreur s\'est produite sur le serveur. Veuillez réessayer plus tard.',
+          message: "Une erreur s'est produite sur le serveur. Veuillez réessayer plus tard.",
           code: 'SERVER_ERROR',
         };
 
@@ -125,7 +145,10 @@ export class ErrorHandler {
 
         return {
           title: 'Erreur de connexion',
-          message: data?.message || data?.error || error.message || 'Une erreur s\'est produite lors de la communication avec le serveur.',
+          message:
+            userMessage ||
+            error.message ||
+            'Une erreur s\'est produite lors de la communication avec le serveur.',
           code: 'CONNECTION_ERROR',
         };
     }
@@ -157,7 +180,7 @@ export class ErrorHandler {
     // Message générique
     return {
       title: 'Erreur',
-      message: error.message || 'Une erreur inattendue s\'est produite.',
+      message: error.message || "Une erreur inattendue s'est produite.",
     };
   }
 
@@ -170,3 +193,5 @@ export class ErrorHandler {
   }
 }
 
+// Re-export du type ApiError pour faciliter l'accès
+export type { ApiError };

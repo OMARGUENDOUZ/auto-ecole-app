@@ -72,7 +72,24 @@ export function CandidatTable({ candidats, isLoading }: CandidatTableProps) {
   const [paymentStudent, setPaymentStudent] = useState<{ id: number, name: string } | null>(null);
 
   const handleStatusChange = (id: number, newStatus: StudentStatus) => {
-    updateCandidat.mutate({ id, status: newStatus });
+    const candidat = candidats.find((c) => c.id === id);
+    if (!candidat) return;
+    updateCandidat.mutate({
+      id,
+      payload: {
+        name: candidat.name,
+        birthDate: candidat.birthDate,
+        gender: candidat.gender,
+        address: candidat.address,
+        phoneNumber: candidat.phoneNumber,
+        requestedLicense: candidat.requestedLicense,
+        status: newStatus,
+        schoolId: candidat.schoolId,
+        placeOfBirth: candidat.placeOfBirth,
+        fatherName: candidat.fatherName,
+        motherName: candidat.motherName,
+      },
+    });
   };
 
   const getStatusLabelKey = (status: string) => {

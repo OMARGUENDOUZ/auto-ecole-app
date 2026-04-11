@@ -1,7 +1,15 @@
 /**
  * Système de logging centralisé
- * En développement: log vers console
- * En production: peut être étendu pour envoyer vers un service externe (Sentry, etc.)
+ *
+ * Comportement par environnement :
+ * - development : tous les niveaux (debug / info / warn / error) sont loggés dans la console
+ * - production  : debug et info sont des **no-op** (aucun log) — seules les erreurs (error)
+ *                 sont conservées. Intégrer Sentry / LogRocket ici pour capturer les erreurs.
+ *
+ * Usage :
+ *   import { logger } from '@/src/lib/logger';
+ *   logger.debug('message de debug');  // no-op en production
+ *   logger.error('erreur critique');   // toujours loggé
  */
 
 type LogLevel = 'debug' | 'info' | 'warn' | 'error';

@@ -1,13 +1,18 @@
 export enum ExamStatus {
+  /**
+   * @deprecated Utiliser SCHEDULED — conservé pour rétrocompatibilité avec les données existantes
+   */
   PLANNED = 'PLANNED',
+  SCHEDULED = 'SCHEDULED',
   CANCELLED = 'CANCELLED',
-  PASSED = 'PASSED'
+  PASSED = 'PASSED',
+  FAILED = 'FAILED',
 }
 
 export enum ExamCategory {
   CODE = 'CODE',
   CRENEAU = 'CRENEAU',
-  CONDUITE = 'CONDUITE'
+  CONDUITE = 'CONDUITE',
 }
 
 export enum ExamResult {
@@ -15,7 +20,7 @@ export enum ExamResult {
   FAIL = 'FAIL',
   PENDING = 'PENDING',
   ABSENT_JUSTIFIED = 'ABSENT_JUSTIFIED',
-  ABSENT_UNJUSTIFIED = 'ABSENT_UNJUSTIFIED'
+  ABSENT_UNJUSTIFIED = 'ABSENT_UNJUSTIFIED',
 }
 
 export interface Exam {
@@ -45,6 +50,3 @@ export interface ExamStudent {
   result?: ExamResult;
   date: string;
 }
-
-
-
