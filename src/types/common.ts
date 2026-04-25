@@ -35,9 +35,7 @@ export interface ApiError {
 export enum LicenseCategory {
   A1 = 'A1',
   A2 = 'A2',
-  A  = 'A',
   B  = 'B',
-  C  = 'C',
   C1 = 'C1',
   C2 = 'C2',
   D  = 'D',

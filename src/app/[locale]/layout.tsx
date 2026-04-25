@@ -4,6 +4,8 @@ import { notFound } from 'next/navigation';
 
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { setRequestLocale } from 'next-intl/server';
+import { getMessages } from 'next-intl/server';
+
 
 import { routing, isRtlLocale, type Locale } from '@/src/routing';
 import { ErrorBoundaryWrapper } from '@/src/components/ErrorBoundaryWrapper';
@@ -13,6 +15,10 @@ export const metadata: Metadata = {
   title: 'Auto-Ecole - Gestion',
   description: 'Plateforme de gestion pour auto-ecoles'
 };
+
+export function generateStaticParams() {
+  return [{ locale: 'fr' }, { locale: 'ar' }];
+}
 
 export default async function LocaleLayout({
   children,
@@ -31,7 +37,7 @@ export default async function LocaleLayout({
 
   const typedLocale = locale as Locale;
   const dir = isRtlLocale(typedLocale) ? 'rtl' : 'ltr';
-  const messages = (await import(`../../messages/${typedLocale}.json`)).default;
+  const messages = await getMessages();
 
   return (
     <div dir={dir} className={dir === 'rtl' ? 'font-arabic min-h-screen' : 'min-h-screen'}>
