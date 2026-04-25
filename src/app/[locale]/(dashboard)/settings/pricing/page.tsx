@@ -15,7 +15,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Loader2, Save, DollarSign, Settings as SettingsIcon, Plus, Eye, Edit, X } from 'lucide-react';
 import { toast } from 'sonner';
 import { Pricing } from '@/src/types/pricing';
-import { LicenseCategory } from '@/src/types/candidat';
+import { LicenseCategory } from '@/src/types/common';
 import api from '@/src/lib/api';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 

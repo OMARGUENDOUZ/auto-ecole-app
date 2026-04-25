@@ -2,7 +2,9 @@ import axios from 'axios';
 import { safeLocalStorage } from '@/src/hooks/use-storage';
 import { getLocalizedLoginPath } from '@/src/lib/navigation';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/api/v1';
+// En développement, utilise le proxy Next.js pour éviter les erreurs CORS
+// En production, utilise l'URL fournie en variable d'environnement
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api/v1';
 
 export const api = axios.create({
   baseURL: API_URL,

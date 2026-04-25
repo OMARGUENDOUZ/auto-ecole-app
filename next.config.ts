@@ -52,12 +52,30 @@ const nextConfig: NextConfig = {
   // Supprime l'en-tête "X-Powered-By: Next.js" (fingerprinting)
   poweredByHeader: false,
   // Active le mode strict React (double render en dev pour détecter les effets de bord)
-  reactStrictMode: true,
+  reactStrictMode: false,
   images: {
     unoptimized: true,
   },
   typescript: {
     ignoreBuildErrors: false,
+  },
+  // ─── Optimisations de compilation ────────────────────────────────────────
+  experimental: {
+    optimizePackageImports: [
+      '@radix-ui/react-*',
+      'lucide-react',
+    ],
+  },
+  // ─── Proxy API pour éviter les erreurs CORS en développement ────────────────
+  async rewrites() {
+    return {
+      beforeFiles: [
+        {
+          source: '/api/v1/:path*',
+          destination: 'http://localhost:8080/api/v1/:path*',
+        },
+      ],
+    };
   },
   async headers() {
     return [
