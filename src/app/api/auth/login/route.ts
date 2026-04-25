@@ -9,7 +9,7 @@ import { NextRequest, NextResponse } from 'next/server';
 export async function POST(request: NextRequest) {
   const body = await request.json();
 
-  const backendUrl = process.env.BACKEND_API_URL || 'http://localhost:8080/api/v1';
+  const backendUrl = process.env.BACKEND_API_URL || 'https://tariqi-1.onrender.com/api/v1';
 
   let response: Response;
   try {
