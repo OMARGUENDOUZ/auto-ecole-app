@@ -39,7 +39,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self'",
-      "connect-src 'self' http://localhost:8080",
+      "connect-src 'self' https://tariqi-1.onrender.com",
     ].join('; '),
   },
 ];
