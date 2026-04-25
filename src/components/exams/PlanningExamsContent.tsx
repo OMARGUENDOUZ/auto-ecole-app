@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Card } from '@/src/components/ui/card';
 import { Button } from '@/src/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/src/components/ui/dialog';
-import { Plus, Users, ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin } from 'lucide-react';
+import { Plus, ChevronLeft, ChevronRight, Calendar as CalendarIcon, MapPin } from 'lucide-react';
 import { format, addMonths, subMonths } from 'date-fns';
 import { fr, arDZ } from 'date-fns/locale';
 import { useExamSlots, useCreateExamSlot } from '@/src/hooks/use-exam-slots';
