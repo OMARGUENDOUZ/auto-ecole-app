@@ -1,6 +1,8 @@
+import { LicenseCategory } from '@/src/types/common';
+
 export interface Pricing {
     id: number;
-    licenseCategory: 'A' | 'B' | 'C' | 'D';
+    licenseCategory: LicenseCategory;
     baseCourseFee: number;
     examUnitFee: number;
     stampUnitFee: number;

@@ -1,7 +1,10 @@
 import api from './api';
+import { API_ROUTES } from './api-routes';
 import { LoginCredentials, AuthResponse, User } from '@/src/types/auth';
 import { safeLocalStorage } from '@/src/hooks/use-storage';
-import { routing } from '@/src/routing';
+
+// Re-exports depuis navigation.ts pour maintenir la rétrocompatibilité
+export { getLocaleFromPathname, getLocalizedLoginPath } from '@/src/lib/navigation';
 
 const TOKEN_KEY = 'auth_token';
 const REFRESH_TOKEN_KEY = 'refresh_token';
@@ -34,29 +37,13 @@ function syncCookieWithStorage() {
   }
 }
 
-export function getLocaleFromPathname(pathname: string): string {
-  const segments = pathname.split('/').filter(Boolean);
-  const firstSegment = segments[0];
-
-  if (firstSegment && routing.locales.includes(firstSegment as (typeof routing.locales)[number])) {
-    return firstSegment;
-  }
-
-  return routing.defaultLocale;
-}
-
-export function getLocalizedLoginPath(pathname?: string): string {
-  const locale = getLocaleFromPathname(pathname || '');
-  return `/${locale}/auth/login`;
-}
-
 export const authService = {
   /**
    * Authentifie un utilisateur avec email et mot de passe
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
-    const { data } = await api.post<AuthResponse>('/auth/login', credentials);
-    
+    const { data } = await api.post<AuthResponse>(API_ROUTES.auth.login, credentials);
+
     // Stocker les tokens et l'utilisateur
     const storage = safeLocalStorage();
     storage.setItem(TOKEN_KEY, data.token);
@@ -65,7 +52,7 @@ export const authService = {
       storage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
     }
     storage.setItem(USER_KEY, JSON.stringify(data.user));
-    
+
     return data;
   },
 
@@ -74,14 +61,14 @@ export const authService = {
    */
   async logout(): Promise<void> {
     const storage = safeLocalStorage();
-    
+
     // Appeler l'endpoint de logout si disponible
     try {
-      await api.post('/auth/logout');
-    } catch (error) {
+      await api.post(API_ROUTES.auth.logout);
+    } catch {
       // Ignorer les erreurs de logout (token peut être expiré)
     }
-    
+
     // Nettoyer le storage
     storage.removeItem(TOKEN_KEY);
     storage.removeItem(REFRESH_TOKEN_KEY);
@@ -95,20 +82,20 @@ export const authService = {
   async refreshToken(): Promise<string | null> {
     const storage = safeLocalStorage();
     const refreshToken = storage.getItem(REFRESH_TOKEN_KEY);
-    
+
     if (!refreshToken) {
       return null;
     }
 
     try {
-      const { data } = await api.post<{ token: string }>('/auth/refresh', {
+      const { data } = await api.post<{ token: string }>(API_ROUTES.auth.refresh, {
         refreshToken,
       });
-      
+
       storage.setItem(TOKEN_KEY, data.token);
       setAuthCookie(data.token);
       return data.token;
-    } catch (error) {
+    } catch {
       // Si le refresh échoue, déconnecter l'utilisateur
       authService.logout();
       return null;
@@ -130,7 +117,7 @@ export const authService = {
     if (!userStr) {
       return null;
     }
-    
+
     try {
       return JSON.parse(userStr) as User;
     } catch {
@@ -149,4 +136,3 @@ export const authService = {
     syncCookieWithStorage();
   },
 };
-

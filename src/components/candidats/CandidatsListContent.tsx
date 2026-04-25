@@ -1,8 +1,14 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { CandidatFilters } from '@/src/components/candidats/CandidatFilters';
-import { CandidatTable } from '@/src/components/candidats/CandidatTable';
+
+// ✨ Lazy load la table pour réduire la taille du bundle initial
+const CandidatTable = dynamic(
+  () => import('@/src/components/candidats/CandidatTable').then(mod => ({ default: mod.CandidatTable })),
+  { loading: () => <div className="p-4">Chargement...</div> }
+);
 import { useCandidats } from '@/src/hooks/use-candidats';
 import { StudentFilters, PaginatedResponse, StudentStatus } from '@/src/types/candidat';
 import Link from 'next/link';

@@ -1,7 +1,9 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import api from '@/src/lib/api';
-import { Student, StudentFilters, PaginatedResponse } from '@/src/types/candidat';
+import { API_ROUTES } from '@/src/lib/api-routes';
+import { Student, StudentFilters, StudentRequest, PaginatedResponse } from '@/src/types/candidat';
 import { toast } from 'sonner';
+import { ErrorHandler } from '@/src/lib/errorHandler';
 
 export function useCandidats(filters?: StudentFilters) {
   const page = filters?.page ?? 0;
@@ -18,30 +20,9 @@ export function useCandidats(filters?: StudentFilters) {
         size: limit,
       };
 
-      // Si pagination demandée, attendre une réponse paginée
-      if (filters?.page !== undefined || filters?.limit !== undefined) {
-        const { data } = await api.get<PaginatedResponse<Student>>('/Student', { params });
-        return data;
-      }
-
-      // Sinon, retourner un tableau simple (rétrocompatibilité)
-      const { data } = await api.get<Student[] | PaginatedResponse<Student>>('/Student', { params });
-
-      // Si c'est déjà paginé, le retourner tel quel
-      if (data && typeof data === 'object' && 'content' in data) {
-        return data as PaginatedResponse<Student>;
-      }
-
-      // Sinon, wrapper dans un format paginé
-      return {
-        content: data as Student[],
-        totalElements: (data as Student[]).length,
-        totalPages: 1,
-        page: 0,
-        size: (data as Student[]).length,
-        first: true,
-        last: true,
-      } as PaginatedResponse<Student>;
+      // Le backend retourne toujours PaginatedResponse — pas besoin de wrapping conditionnel
+      const { data } = await api.get<PaginatedResponse<Student>>(API_ROUTES.students.list, { params });
+      return data;
     },
     retry: 1,
     retryDelay: 1000,
@@ -53,7 +34,7 @@ export function useCandidat(id: number) {
     queryKey: ['candidat', id],
     staleTime: 30 * 1000,
     queryFn: async () => {
-      const { data } = await api.get<Student>(`/Student/${id}`);
+      const { data } = await api.get<Student>(API_ROUTES.students.byId(id));
       return data;
     },
     enabled: !!id,
@@ -66,8 +47,8 @@ export function useCreateCandidat() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (candidat: Partial<Student>) => {
-      const { data } = await api.post<Student>('/Student', candidat);
+    mutationFn: async (candidat: StudentRequest) => {
+      const { data } = await api.post<Student>(API_ROUTES.students.list, candidat);
       return data;
     },
     onSuccess: () => {
@@ -75,10 +56,7 @@ export function useCreateCandidat() {
       toast.success('Candidat créé avec succès');
     },
     onError: (error: unknown) => {
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Erreur lors de la création';
-      toast.error(errorMessage);
+      toast.error(ErrorHandler.getErrorMessage(error));
     },
   });
 }
@@ -87,26 +65,8 @@ export function useUpdateCandidat() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<Student> & { id: number }) => {
-      let currentCandidat = queryClient.getQueryData<Student>(['candidat', id]);
-
-      // If not in cache, fetch from API
-      if (!currentCandidat) {
-        try {
-          const { data } = await api.get<Student>(`/Student/${id}`);
-          currentCandidat = data;
-        } catch (error) {
-          throw new Error('Impossible de récupérer le candidat pour la mise à jour');
-        }
-      }
-
-      const payload = {
-        ...currentCandidat,
-        ...updates,
-        id,
-      };
-
-      const { data: response } = await api.put(`/Student/${id}`, payload);
+    mutationFn: async ({ id, payload }: { id: number; payload: StudentRequest }) => {
+      const { data: response } = await api.put<Student>(API_ROUTES.students.byId(id), payload);
       return response;
     },
     onSuccess: (_, variables) => {
@@ -115,22 +75,17 @@ export function useUpdateCandidat() {
       toast.success('Candidat mis à jour');
     },
     onError: (error: unknown) => {
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Erreur lors de la mise à jour';
-      toast.error(errorMessage);
+      toast.error(ErrorHandler.getErrorMessage(error));
     },
   });
 }
-
-
 
 export function useUploadPhoto() {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ id, photoBase64 }: { id: number; photoBase64: string }) => {
-      const { data } = await api.post<Student>(`/Student/${id}/photo`, { photoBase64 });
+      const { data } = await api.post<Student>(API_ROUTES.students.photo(id), { photoBase64 });
       return data;
     },
     onSuccess: (_, variables) => {
@@ -138,10 +93,7 @@ export function useUploadPhoto() {
       toast.success('Photo uploadée');
     },
     onError: (error: unknown) => {
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Erreur lors de l\'upload de la photo';
-      toast.error(errorMessage);
+      toast.error(ErrorHandler.getErrorMessage(error));
     },
   });
 }
@@ -151,17 +103,14 @@ export function useDeleteCandidat() {
 
   return useMutation({
     mutationFn: async (id: number) => {
-      await api.delete(`/Student/${id}`);
+      await api.delete(API_ROUTES.students.byId(id));
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['candidats'] });
       toast.success('Candidat supprimé');
     },
     onError: (error: unknown) => {
-      const errorMessage = error instanceof Error
-        ? error.message
-        : 'Erreur lors de la suppression';
-      toast.error(errorMessage);
+      toast.error(ErrorHandler.getErrorMessage(error));
     },
   });
 }

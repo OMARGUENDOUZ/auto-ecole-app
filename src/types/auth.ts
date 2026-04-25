@@ -1,3 +1,5 @@
+export type UserRole = 'ADMIN' | 'INSTRUCTOR' | 'SECRETARY';
+
 export interface LoginCredentials {
   email: string;
   password: string;
@@ -7,11 +9,12 @@ export interface User {
   id: number;
   email: string;
   name?: string;
-  role?: string;
+  role?: UserRole;
 }
 
 export interface AuthResponse {
   token: string;
+  // TODO: enable when backend implements refresh tokens
   refreshToken?: string;
   user: User;
 }
@@ -21,4 +24,3 @@ export interface AuthState {
   token: string | null;
   isAuthenticated: boolean;
 }
-

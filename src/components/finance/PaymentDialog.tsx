@@ -85,17 +85,12 @@ export function PaymentDialog({ studentId, open, onOpenChange, studentName }: Pa
                         <div className="bg-muted/40 p-4 rounded-lg space-y-2">
                             <h3 className="font-semibold mb-2">{t('invoiceDetails')}</h3>
                             <div className="space-y-1">
-                                {invoice.breakdown && (() => {
-                                    try {
-                                        const items = JSON.parse(invoice.breakdown);
-                                        return items.map((item: { description: string; amount: number }, idx: number) => (
-                                            <div key={idx} className="flex justify-between text-sm">
-                                                <span className="text-muted-foreground">{item.description}</span>
-                                                <span>{item.amount} DA</span>
-                                            </div>
-                                        ));
-                                    } catch (e) { return null; }
-                                })()}
+                                {invoice.breakdown && Object.entries(invoice.breakdown).map(([label, amount]) => (
+                                    <div key={label} className="flex justify-between text-sm">
+                                        <span className="text-muted-foreground">{label}</span>
+                                        <span>{amount} DA</span>
+                                    </div>
+                                ))}
                             </div>
 
                             <div className="border-t pt-2 mt-2 flex justify-between font-bold">
